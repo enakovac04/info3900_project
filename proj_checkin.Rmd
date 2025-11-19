@@ -1,29 +1,36 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+Group: Alexa Sheldon (ars422), Ena Kovac (ehk75), Alex Ho (ath58)  
 
 ## Action Items
 
 1. Has your group been able to get into contact with everyone in the group? (yes/no)
 
-**Answer**: Yes, we had our first meeting on Saturday (11/15) and our second meeting on Wednesday (11/19) so far.
+**Answer**: Yes, we had our first meeting on Saturday (11/15) and our second meeting on Wednesday (11/19) so far. We also have a text groupchat.  
 
 2. What is the treatment and outcome your group is considering. What are the variable names in ADD Health?
 
 **Answer**: Our treatment is going to be Waist size. 
-Our outcome is going to be resting heart rate which is an indicator of general health and fitness.
-Treatment variable name: H5_WAIST_CM which is in Wave V Anthropometrics as H5WAIST or H5WSTCLS
-Outcome variable name: H5_PULSE1, H5_PULSE2, H5_PULSE3 These variables are available in Add Health Wave 5 and can be used to study whether people with larger waist sizes have higher resting heart rates. Can also find in Wave V Cardiovascular Measures - H5Q033 (that’s Pulse 1).
+Our outcome is going to be resting heart rate which is an indicator of general health and fitness.  
+Treatment variable name: H5WSTCLS which is in Wave V Anthropometrics which maintains a classification of low/high risk for a waist size based on an individual's sex and circumference.  
+Outcome variable name: H5PR which can be found in Wave V Cardiovascular Measures (pulse rate based on Pulse 1, 2, and 3 which are separate variables H5Q033, H5Q038, H5Q043).  
 
 3. Write 1-2 sentences describing your group's plan for Data processing. Refer to the instructions on the course website for more details.
 
-**Answer**: In our group, Alex, Alexa, and Ena will be collaborating together on the data cleaning and processing. Our first goal is to isolate and import the data successfully. We will then check in via another Zoom meeting by Monday Nov 19 (11/19, 4:30 PM) to determine next steps especially with regards to cleaning. 
+**Answer**: In our group, Alex, Alexa, and Ena will be collaborating together on the data cleaning and processing. Our first goal is to isolate and import the data successfully. We completed this at our Zoom meeting on Wednesday, Nov 19 (11/19, 4:30 PM), and set up next steps work towards cleaning then analysis. That will include reading the codebooks to understand what each of the inputs represents (including those who don't answer or NA responses). The goal is to have the data clean and ready for analysis by Dec 1st.  
 
 4. Write 1-2 sentences describing your group's plan for the Analysis strategy. Refer to the instructions on the course website for more details.
 
-**Answer**: We will use matching to analyze our data's potential causal effect. In our group, Ena will work on identification (drawing the DAG and determining conditional exchangeability). She’ll work with Alexa and Alex to make sure the variables are in the dataset to use in matching. They plan to finish this by Nov 19th. Everyone (Ena, Alexa, & Alex) will work on conducting the matching in R, starting Nov 19th.
+**Answer**: We will use matching to analyze our data's potential causal effect. In our group, Ena will work on identification (drawing the DAG and determining conditional exchangeability). At our meeting on 11/19, we figured out exactly what variables to use in terms of treatment, outcome, and confounders. Everyone (Ena, Alexa, & Alex) will work on conducting the matching in R, starting Dec 1st.  
 
 6. What is the next date your group is planning to check in on progress (either via a meeting or through a groupchat).
 
-**Answer**: We have a groupchat that we will keep each other up to date. We also have a github repo in order for us all to work collaboratively on the project. Our current plan is to meet on 11/19 and determine the next time after that we will meet. 
+**Answer**: We have a groupchat that we will keep each other up to date. We also have a GitHub repo in order for us all to work collaboratively on the project. Our current plan is to chat/text over Thanksgiving break about data cleaning / preparation, then reconvene after break to begin the analysis. Our next meeting will be Dec 1st at 10pm over zoom.  
 
