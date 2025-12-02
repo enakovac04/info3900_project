@@ -16,21 +16,79 @@ anthro <- read_xpt("panthro5.xpt")
 Treatment
 ```{r}
 # Waist circumference classification (1 = low risk, 2 = high risk)
-anthro$H5WSTCLS 
+# anthro$H5WSTCLS 
 ```
 Outcome
 ```{r}
-cardio$H5Q033 # pulse rate 1
+# cardio$H5Q033 # pulse rate 1
+
+# cardio$H5Q038 # pulse rate 2
+
+# cardio$H5Q043 # pulse rate 3
+
+# cardio$H5PR # PR based on Pulse 1, 2, and 3
 ```
 
+Cleaning the data
 ```{r}
-cardio$H5Q038 # pulse rate 2
+library(dplyr)
+library(tibble)
+# pruning for non-answers in waist circumference (94, 96, 97, 99 are invalid)
+waist <- enframe(anthro$H5WSTCLS, name = "individual", "waist_class")
+waist_fil <- waist %>% filter(waist_class <=2)
+waist_fil <- waist_fil %>% mutate(waist_class_bin = waist_class - 1)
+# pruning for non-answers in pulse PR (9996 9997 9999 are invalid)
+hr <- enframe(cardio$H5PR, name = "individual", "hr")
+hr_fil <- hr %>% filter(hr < 9996)
+# joining on individuals remaining
+waist_hr <- merge(waist_fil, hr_fil, by = "individual")
+print(waist_hr)
 ```
-
+Other variables
 ```{r}
-cardio$H5Q043 # pulse rate 3
+# no invalid entries for sex and age
+sex <- enframe(demo$H5Q011, name = "individual", "sex")  # biological sex
+age <- enframe(demo$H5AGE, name = "individual", "age") # age by year
+# valid bmi class is <= 6
+bmi <- enframe(anthro$H5BMICLS, name = "individual", "bmi") # BMI (classification)
+bmi_fil <- bmi %>% filter(bmi <= 6)
+# valid bp class is <= 5
+bp <- enframe(cardio$H5BPCLS5, name = "individual", "bp") # blood pressure (classification)
+bp_fil <- bp %>% filter(bp <= 5)
+# valid bp class is 0 or 1
+bs <- enframe(cardio$H5Q045B, name = "individual", "bs") # blood sugar level
+bs_fil <- bs %>% filter(bs == 0 | bs == 1)
+# valid aht med flag is 0 or 1
+med_use <- enframe(cardio$H5AHT, name = "individual", "med_use") # flag for anti-hypertensive medication use
+med_use_fil <- med_use %>% filter(med_use == 0 | med_use == 1)
 ```
-
+Merging all variables together
 ```{r}
-cardio$H5PR # PR based on Pulse 1, 2, and 3
+output_tb <- waist_hr %>% 
+  merge(sex, by = "individual") %>% 
+  merge(age, by = "individual") %>% 
+  merge(bmi_fil, by = "individual") %>% 
+  merge(bp_fil, by = "individual") %>% 
+  merge(bs_fil, by = "individual") %>% 
+  merge(med_use_fil, by = "individual")
+print(output_tb)
+```
+Matching
+```{r}
+library("tidyverse")
+library("MatchIt")
+library("marginaleffects")
+matching_all <- matchit(waist_class_bin ~ sex + age + bmi + bp + bs + med_use,
+                 data = output_tb,
+                 method = "nearest",
+                 estimand = "ATT", 
+                 distance = "mahalanobis")
+summary(matching_all)$nn
+summary(select(output_tb, hr))
+summary(select(match.data(matching_all), hr))
+```
+Estimation of Causal Effect
+```{r}
+# utilize parametric g-formula
+# outcome_model <- glm(outcome ~ treatment + covariate1 + covariate2, data = matched_data)
 ```
