@@ -91,4 +91,44 @@ Estimation of Causal Effect
 ```{r}
 # utilize parametric g-formula
 # outcome_model <- glm(outcome ~ treatment + covariate1 + covariate2, data = matched_data)
+matched_data <- match.data(matching_all)
+
+outcome_model <- lm(
+  hr ~ waist_class_bin + sex + age + bmi + bp + bs + med_use,
+  data   = matched_data,
+  weights = weights
+)
+
+summary(outcome_model)
+
+# ATT via parametric g-formula
+# Predict Y under treat=1 and treat=0 for the actually treated units
+treated_rows <- subset(matched_data, waist_class_bin == 1)
+
+treated_as_treated <- treated_rows
+treated_as_control <- treated_rows
+treated_as_control$waist_class_bin <- 0
+
+# Y^{a=1}
+y1_hat <- predict(outcome_model, newdata = treated_as_treated)
+# Y^{a=0}
+y0_hat <- predict(outcome_model, newdata = treated_as_control)
+
+# ATT (avg causal effect of small vs. large waist on heart rate)
+att_gformula <- mean(y1_hat) - mean(y0_hat)
+att_gformula
+
+
+# =============================
+
+# Marginal effects (additional) from lab
+avg_comparisons(
+  outcome_model,
+  variables = "waist_class_bin",
+  vcov = ~subclass,
+  newdata = subset(matched_data, waist_class_bin == 1)
+)
+
+
+
 ```
