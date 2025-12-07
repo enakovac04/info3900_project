@@ -1,7 +1,7 @@
 # Final report 
 
-* Group Topic:
-* Team members: 
+* Group Topic: The Causal Effect of Waist Circumference on Resting Pulse Rate in Adults
+* Team members: Alex Ho, Alexa Sheldon, Ena Kovac
 
 ## Causal Question 
 
