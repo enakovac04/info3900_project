@@ -170,7 +170,15 @@ bias-variance trade-offs, and assessing how well your method did.
 ##### Discuss the limitations of your analysis: what are the limitations of your dataset? Is there other data you would have wanted to have to bolster your analysis? Playing devil’s advocate, how would you critique the reliability of you causal estimate?
 
 **Answer**
+Our analysis has several important limitations related to both the dataset and the methodological choices we made. First, the Add Health Wave V data are cross-sectional for the purposes of our analysis, which limits our ability to establish temporal ordering. Although our DAG encodes a plausible causal direction from waist circumference to resting pulse, reverse causality or simultaneous determination cannot be fully ruled out.
 
+Second, while matching improves balance between treated and control units, our use of nearest-neighbor matching may pair some treated individuals with controls that are only weakly similar, especially for treated units with uncommon covariate profiles. This issue is compounded by the fact that the treated group (low-risk waist circumference) is smaller than the control group, making the ATT estimate more sensitive to randomness and potential outliers among treated units.
+
+Third, several important confounders are not available in the dataset, including physical activity, diet, smoking status, stress, fitness level, and socioeconomic or neighborhood-level factors. These omitted variables may affect both waist circumference and resting pulse, raising concerns about residual confounding and weakening the plausibility of conditional exchangeability.
+
+Additionally, many of the variables used in our analysis are categorical classifications rather than continuous measures, such as BMI category, blood pressure stage, and waist circumference risk classification. This coarsening may obscure within-category variation and reduce precision. In particular, the estimated effects of BMI and medication use are imprecise, with confidence intervals that overlap zero, suggesting substantial uncertainty about their true effects.
+
+Finally, the parametric g-formula relies on correct specification of the outcome model. If the linear model does not adequately capture the true relationship between covariates and resting pulse, our causal estimates may be biased even after matching. Taken together, these limitations suggest that while our estimated ATT is consistent with prior literature and biologically plausible, it should be interpreted as suggestive rather than definitive evidence of a causal effect.
 
 \newpage
 
