@@ -6,21 +6,22 @@ output:
 # Final report 
 
 * Group Topic: The Causal Effect of Waist Circumference on Resting Pulse Rate in Adults
-* Team members: Alex Ho, Alexa Sheldon, Ena Kovac
+* Team members: Alex Ho (ath58), Alexa Sheldon (ars422), Ena Kovac (ehk75)
 
 ## Causal Question 
 
-##### Describe your causal question in a way that someone who has not taken this class would understand. Why are you interested in this question? How could answering this question allow for better decision making? Include any necessary background or context. Cite outside sources you use.
-
+##### Describe your causal question in a way that someone who has not taken this class would understand. Why are you interested in this question? How could answering this question allow for better decision making? Include any necessary background or context. Cite outside sources you use.  
+\
 **Answer**
 We are interested in understanding whether having a high-risk waist circumference causes higher resting pulse rate in adults. Resting pulse rate is a widely used indicator of cardiovascular health, and elevated pulse has been associated with hypertension, arrhythmias, and increased risk of cardiovascular disease. Waist circumference, which reflects central (visceral) adiposity, is increasingly recognized as an important marker of cardiometabolic risk, sometimes beyond what body mass index (BMI) captures.
 
 This question matters because most available evidence documents correlations between obesity-related measures and pulse rate, but correlation alone does not tell us whether excess central adiposity itself contributes to higher pulse. Answering this question causally could help clinicians and public health practitioners better assess cardiovascular risk and prioritize interventions that focus on reducing central obesity, rather than relying solely on BMI, when making treatment or prevention decisions.
 
 
-##### Describe your causal question in the language of causal inference we’ve learned in this course: What is the treatment? What is the outcome? What are the potential outcomes? Write these out in words and in the math notation we have used in class.
-
+##### Describe your causal question in the language of causal inference we’ve learned in this course: What is the treatment? What is the outcome? What are the potential outcomes? Write these out in words and in the math notation we have used in class.  
+\
 **Answer**
+
 - **Treatment (A):** Waist circumference category  
   We define treatment as having a *low-risk waist circumference* and control as having a *high-risk waist circumference*.
 
@@ -40,7 +41,7 @@ The causal estimand of interest is the **average treatment effect on the treated
 ## Causal Diagram 
 
 ##### Draw a DAG representing your causal question that includes at least three relevant variables besides treatment and outcome that are included in your dataset. You may include more than three variables. You may include variables that are not in your dataset, but at least 3 of your variables (excluding treatment and outcome) must be included in your dataset. If you use letters to denote variables, make sure they are clearly defined
-
+\
 **Answer**
 
 ```{r setup, include=FALSE}
@@ -56,7 +57,7 @@ Our DAG includes the following variables:
 - **Treatment:** WaistCirc (A) – high- versus low-risk waist circumference  
 - **Outcome:** Pulse (Y) – resting pulse rate  
 
-**Covariates from the dataset:**
+**Covariates from the dataset:**  
 - Sex  
 - Age  
 - BMI (body-mass-index category)  
@@ -73,23 +74,23 @@ The DAG has directed edges:
 - From BloodPressure into MedicationUse  
 
 ##### Explain your DAG: tell us in words what is meant by each edge in your DAG.
-
-**Answer** 
-- **Sex → WaistCirc, Sex → Pulse:** Biological sex affects fat distribution and cardiovascular physiology, and females tend to have higher resting pulse than males.
-- **Age → WaistCirc, Age → Pulse:** Aging is associated with increased central adiposity and cardiovascular changes that affect pulse.
-- **BMI → WaistCirc:** Higher overall adiposity increases the likelihood of high-risk waist circumference.
-- **BMI → BloodPressure, BMI → BloodSugar:** Higher BMI worsens metabolic and cardiovascular health.
-- **BloodPressure → MedicationUse:** Individuals with hypertension are more likely to take antihypertensive medications.
-- **BloodPressure → Pulse:** Elevated blood pressure reflects increased cardiac workload.
-- **BloodSugar → Pulse:** Diabetes and poor glycemic control affect autonomic regulation.
-- **MedicationUse → Pulse:** Some antihypertensive medications directly affect heart rate.
-- **WaistCirc → Pulse:** Central adiposity may increase pulse through inflammation, sympathetic activation, and cardiovascular strain.
-
-
+\
+**Answer**  
+- **Sex → WaistCirc, Sex → Pulse:** Biological sex affects fat distribution and cardiovascular physiology, and females tend to have higher resting pulse than males.  
+- **Age → WaistCirc, Age → Pulse:** Aging is associated with increased central adiposity and cardiovascular changes that affect pulse.  
+- **BMI → WaistCirc:** Higher overall adiposity increases the likelihood of high-risk waist circumference.  
+- **BMI → BloodPressure, BMI → BloodSugar:** Higher BMI worsens metabolic and cardiovascular health.  
+- **BloodPressure → MedicationUse:** Individuals with hypertension are more likely to take antihypertensive medications.  
+- **BloodPressure → Pulse:** Elevated blood pressure reflects increased cardiac workload.  
+- **BloodSugar → Pulse:** Diabetes and poor glycemic control affect autonomic regulation.  
+- **MedicationUse → Pulse:** Some antihypertensive medications directly affect heart rate.  
+- **WaistCirc → Pulse:** Central adiposity may increase pulse through inflammation, sympathetic activation, and cardiovascular strain.  
 
 
-##### Discuss your DAG. How realistic is it? Are there variables or edges you excluded from your DAG that someone else might argue should be included? Playing devil’s advocate, how would you critique the reliability of your DAG?
 
+
+##### Discuss your DAG. How realistic is it? Are there variables or edges you excluded from your DAG that someone else might argue should be included? Playing devil’s advocate, how would you critique the reliability of your DAG? 
+\
 **Answer**
 Our DAG is a reasonable simplification of well-established biological relationships, but it omits several plausible confounders such as physical activity, smoking, diet, stress, alcohol use, and genetics. These factors may affect both waist circumference and resting pulse. Additionally, because the data are cross-sectional, the assumed temporal ordering may not fully reflect reality. Measurement error and misclassification are also possible. Overall, the DAG is a simplified representation of our assumptions rather than a definitive causal structure.
 
@@ -97,7 +98,7 @@ Our DAG is a reasonable simplification of well-established biological relationsh
 ## Method and Identification 
 
 ##### What method are you using to estimate a causal effect? What causal effect are you estimating (e.g., ATE vs LATE vs ATT)? What assumptions are required to identify the causal effect via your chosen method?
-
+\
 **Answer**
 
 We estimate the **Average Treatment Effect on the Treated (ATT)** of having a low-risk waist circumference (treatment) versus a high-risk waist circumference (control) on resting pulse rate.
@@ -111,15 +112,15 @@ Identification of this causal effect relies on several assumptions. We assume co
 Under these assumptions, our matching and parametric g-formula approach identifies the ATT of low-risk versus high-risk waist circumference on resting pulse.
 
 ##### Explain what conditional exchangeability means in the context of your causal question. Is it important? Why or why not? How do sufficient adjustment sets relate to conditional exchangeability?
-
+\
 **Answer**
-for the observed covariates, individuals with low-risk and high-risk waist circumference are comparable with respect to factors that influence resting pulse rate. In our context, this implies that once we condition on sex, age, BMI, blood pressure, blood sugar, and antihypertensive medication use, waist circumference classification is independent of the potential resting pulse outcomes among those with low-risk waists.
+For the observed covariates, individuals with low-risk and high-risk waist circumference are comparable with respect to factors that influence resting pulse rate. In our context, this implies that once we condition on sex, age, BMI, blood pressure, blood sugar, and antihypertensive medication use, waist circumference classification is independent of the potential resting pulse outcomes among those with low-risk waists.
 
 This assumption is crucial because without conditional exchangeability, differences in resting pulse could be driven by confounding rather than a causal effect of waist circumference. Sufficient adjustment sets are directly related to conditional exchangeability: a sufficient adjustment set blocks all non-causal (backdoor) paths between treatment and outcome in the DAG, thereby making conditional exchangeability plausible.
 
 
-##### Assuming your DAG is true, list out all non-causal paths between treatment and outcome and list one sufficient adjustment set to identify the causal effect of the treatment on the outcome. If a sufficient adjustment set does not exist, add additional variables to your DAG so that one does exist.
-
+##### Assuming your DAG is true, list out all non-causal paths between treatment and outcome and list one sufficient adjustment set to identify the causal effect of the treatment on the outcome. If a sufficient adjustment set does not exist, add additional variables to your DAG so that one does exist. 
+\
 **Answer**
 Assuming the DAG is correct, the non-causal (backdoor) paths between waist circumference and resting pulse include paths through common causes of both variables. These include pathways through sex and age, as well as metabolic pathways through BMI that operate via blood pressure, blood sugar, and antihypertensive medication use. For example, waist circumference and pulse are associated through the paths WaistCirc ← Sex → Pulse, WaistCirc ← Age → Pulse, WaistCirc ← BMI → BloodPressure → Pulse, WaistCirc ← BMI → BloodSugar → Pulse, and WaistCirc ← BMI → BloodPressure → MedicationUse → Pulse.
 
@@ -128,14 +129,14 @@ A sufficient adjustment set that blocks all of these non-causal paths is sex, ag
 
 
 ##### Discuss the plausibility of conditional exchangeability in your setting. If your sufficient adjustment set contains variables that are not in your dataset, discuss the implications.
-
+\
 **Answer**
 Conditional exchangeability is plausible but imperfect in our setting. While we adjust for several important demographic and metabolic confounders available in the Add Health dataset, there are likely unmeasured factors such as physical activity, diet, smoking, stress, and socioeconomic or neighborhood characteristics that influence both waist circumference and resting pulse rate. These variables are not included in our dataset, which means that some residual confounding may remain. As a result, our causal estimates should be interpreted cautiously, recognizing the possibility of bias due to unmeasured confounders.
 
 
 
 ##### Discuss any other identification assumptions for your method here, such as positivity and consistency. What do they mean in the context of your causal question and are they plausible?
-
+\
 **Answer**
 In addition to conditional exchangeability, our analysis relies on several other identification assumptions. The positivity assumption requires that, for individuals with covariate values observed among the treated group, there is a non-zero probability of having either low-risk or high-risk waist circumference. This appears reasonable in our data, though extreme combinations of covariates may be rare. The consistency assumption requires that each individual’s observed resting pulse corresponds to the potential outcome under their observed waist circumference category, which is plausible given the clear definition of waist risk categories. We also assume no interference between individuals and that the parametric outcome model used in the g-formula is reasonably well specified.
 
@@ -144,7 +145,7 @@ Together, these assumptions allow us to interpret our estimated ATT as a causal 
 ## Discussion: Analysis and Results
 
 ##### Give some context for your dataset. Who is included in your dataset? How was the data collected? When was the data collected? Make sure to cite the dataset.
-
+\
 **Answer**
 The dataset we were working with was Wave V from Add Health. The National Longitudinal Study of Adolescent to Adult Health (Add Health) follows a sample of about 20,000 adolescents who were in grades 7-12 during the 1994-95 school year over many years, with Wave V being in 2016-2018. We used data from Demographics, Cardiovascular Measures, and Anthropometrics.  
 
@@ -152,7 +153,7 @@ Wave V was a mixed-mode survey with some respondents having in-home interviews. 
 
 
 ##### Discuss any choices you made regarding data cleaning and processing: Did your data have missing values or outliers? How did you handle them? Were there any variables you dichotomized (i.e. made binary), or variables that you changed the format (e.g. yes/no to 1/0)?
-
+\
 **Answer**  
 Any individuals that had invalid or missing data in any of the variables were excluded from the analysis (including waist size, heart rate, body-mass-index, blood pressure, blood sugar level, anti-hypertensive medication use, however sex and age was present for each individual). Originally there were around 1,839 individuals, but throughout the cleaning process, we cut it down to 1,706 individuals who had valid data in the variables we were looking at. Outliers were not discounted since many of the variables that were analyzed were classifications (including waist, body-mass-index, blood-sugar level, and a flag for anti-hypertensive medication use).  
 
@@ -160,8 +161,8 @@ Waist size was reported as a classification between high risk and low risk (was 
 
 
 ##### Discuss the impact of any choices you made regarding your dataset, such as choices you made in data cleaning or processing.
-
-**Answer**
+\
+**Answer**  
 Using corresponding variable names for cardiovascular statistics (H5PR for pulse rate) and anthropometrics statistics (H5WSTCLS for waist size), we processed the data to exclude non-answers in waist circumference and pulse PR (ensuring that only relevant entries were considered). This may have reduced the total number of individuals for our analysis, but was necessary for the purpose of assessing our causal question. Without insights into these measures, we could not use every individual evaluated in Wave V, and we lose some potential confounder about whether or not they could be evaluated on that metric. For example, we do not know if low risk or high risk waist sized people would be more or less likely to have a valid pulse rate measurement.  
 
 Once we merged all of the data to just contain individuals with valid data for all of the relevant variables, we found that we had more individuals who were at high risk for waist (our control) than low risk waist (our treatment). This helps us to find more similar counterparts for each treated person if you have more control to select from. However, since the treatment group is smaller, it can be more impacted by randomness or outliers. 
@@ -175,23 +176,23 @@ your matched sample? Discuss the implications of any choices you made and the qu
 matching.
 * If you didn’t use matching, explain any choices you made related to the method you used and
 discuss their implications. Think about advantages or drawbacks to any choices you made, possible
-bias-variance trade-offs, and assessing how well your method did.
+bias-variance trade-offs, and assessing how well your method did.  
 
-**Answer**
+**Answer**  
 We utilized matching to understand the effect of those who had a low risk (or smaller) waist size on their pulse rate (so we did ATT with low risk as treatment). Since we had various levels of classification (and differing ranges), we utilized Mahalanobis distance to account for the different scales of sex, age, bmi, blood pressure, blood sugar, anti-hypertensive medication use (as well as correlation between our different variables).  
 
 Once matched, we had 60 more units from the control group, so we dropped those 60 that were not nearest to any of the treatment individuals. We used ‘nearest’ to determine matching since we only had 823 matched units and had already reduced our number of individuals by requiring that they had valid entries for all relevant variables. There is a downside to this since all treated individuals were matched and there could have been an outlier in that set that had to get matched with a control that was not similar to it (but the control was the most similar to it).  
 
 In terms of the quality of our matching, the distribution of our matched set of units was quite similar to our data before matching. It has the same min and max, while the mean is only less by .24 and the median was less by .25. Since the distributions were similar, we know that our data is likely quite representative of our individuals with all the relevant valid data.  
 
-##### Report your causal effect estimate and interpret it in the context of your causal question.
-
+##### Report your causal effect estimate and interpret it in the context of your causal question.  
+\
 **Answer**
 From our results (using parametric g-formula), we see that for the variable “waist_class_bin” (the binary value assigned to the waist classes, for lower or higher circumferences), the calculated coefficient causal effect value is “-2.934693” (when rounding, approximately -2.93). In the context of our analysis, this estimated result for the causal effect means that moving from the high-risk to low-risk waist circumference causally lowers resting heart rate by around 2.93 bpm for people who actually have low-risk waists (the Average Treatment Effect on the Treated, ATT).
 
 
-##### Discuss the limitations of your analysis: what are the limitations of your dataset? Is there other data you would have wanted to have to bolster your analysis? Playing devil’s advocate, how would you critique the reliability of you causal estimate?
-
+##### Discuss the limitations of your analysis: what are the limitations of your dataset? Is there other data you would have wanted to have to bolster your analysis? Playing devil’s advocate, how would you critique the reliability of you causal estimate?  
+\
 **Answer**
 Our analysis has several important limitations related to both the dataset and the methodological choices we made. First, the Add Health Wave V data are cross-sectional for the purposes of our analysis, which limits our ability to establish temporal ordering. Although our DAG encodes a plausible causal direction from waist circumference to resting pulse, reverse causality or simultaneous determination cannot be fully ruled out.
 
@@ -242,7 +243,7 @@ hr <- enframe(cardio$H5PR, name = "individual", "hr")
 hr_fil <- hr %>% filter(hr < 9996)
 # joining on individuals remaining
 waist_hr <- merge(waist_fil, hr_fil, by = "individual")
-print(waist_hr)
+#print(waist_hr)
 
 
 
@@ -277,7 +278,7 @@ output_tb <- waist_hr %>%
   merge(bp_fil, by = "individual") %>% 
   merge(bs_fil, by = "individual") %>% 
   merge(med_use_fil, by = "individual")
-print(output_tb)
+#print(output_tb)
 
 
 ## ===== Matching =====
