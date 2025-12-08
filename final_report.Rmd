@@ -1,3 +1,8 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
 # Final report 
 
 * Group Topic: The Causal Effect of Waist Circumference on Resting Pulse Rate in Adults
@@ -177,6 +182,7 @@ In terms of the quality of our matching, the distribution of our matched set of 
 ##### Report your causal effect estimate and interpret it in the context of your causal question.
 
 **Answer**
+From our results (using parametric g-formula), we see that for the variable “waist_class_bin” (the binary value assigned to the waist classes, for lower or higher circumferences), the calculated coefficient causal effect value is “-2.934693” (when rounding, approximately -2.93). In the context of our analysis, this estimated result for the causal effect means that moving from the high-risk to low-risk waist circumference causally lowers resting heart rate by around 2.93 bpm for people who actually have low-risk waists (the Average Treatment Effect on the Treated, ATT).
 
 
 ##### Discuss the limitations of your analysis: what are the limitations of your dataset? Is there other data you would have wanted to have to bolster your analysis? Playing devil’s advocate, how would you critique the reliability of you causal estimate?
