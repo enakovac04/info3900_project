@@ -191,6 +191,130 @@ Finally, the parametric g-formula relies on correct specification of the outcome
 # If a classmate who wasn’t as familiar with R were to read through this section, 
 # would they be able to follow along?
 
+library(haven)
+# reading in xpt files from ADD Health
+demo <- read_xpt("pdemo5.xpt")
+cardio <- read_xpt("pcardio5.xpt")
+anthro <- read_xpt("panthro5.xpt")
+
+## ===== Isolating Variables to be Used =====
+
+# For our Treatment variable, we use anthro$H5WSTCLS
+# with waist circumference classifications (1 = low risk, 2 = high risk)
+
+# For our Outcome variable, we use cardio$H5PR, which measures heart rate (per minute)
+# numerically
+
+
+## ===== Cleaning the data =====
+
+library(dplyr)
+library(tibble)
+# pruning for non-answers in waist circumference (94, 96, 97, 99 are invalid)
+waist <- enframe(anthro$H5WSTCLS, name = "individual", "waist_class")
+waist_fil <- waist %>% filter(waist_class <=2)
+waist_fil <- waist_fil %>% mutate(waist_class_bin = waist_class %% 2)
+# pruning for non-answers in pulse PR (9996 9997 9999 are invalid)
+hr <- enframe(cardio$H5PR, name = "individual", "hr")
+hr_fil <- hr %>% filter(hr < 9996)
+# joining on individuals remaining
+waist_hr <- merge(waist_fil, hr_fil, by = "individual")
+print(waist_hr)
+
+
+
+## ===== Other variables =====
+
+# No invalid entries for sex and age
+# Biological sex
+sex <- enframe(demo$H5Q011, name = "individual", "sex")  
+# Age by year
+age <- enframe(demo$H5AGE, name = "individual", "age") 
+# BMI (classification), valid bmi class is <= 6
+bmi <- enframe(anthro$H5BMICLS, name = "individual", "bmi") 
+bmi_fil <- bmi %>% filter(bmi <= 6)
+# blood pressure (classification), valid bp class is <= 5
+bp <- enframe(cardio$H5BPCLS5, name = "individual", "bp") # 
+bp_fil <- bp %>% filter(bp <= 5)
+# blood sugar level, valid bs class is 0 or 1
+bs <- enframe(cardio$H5Q045B, name = "individual", "bs") 
+bs_fil <- bs %>% filter(bs == 0 | bs == 1)
+# flag for anti-hypertensive medication use
+# valid aht med flag is 0 or 1
+med_use <- enframe(cardio$H5AHT, name = "individual", "med_use") 
+med_use_fil <- med_use %>% filter(med_use == 0 | med_use == 1)
+
+
+## ===== Merging all variables together =====
+
+output_tb <- waist_hr %>% 
+  merge(sex, by = "individual") %>% 
+  merge(age, by = "individual") %>% 
+  merge(bmi_fil, by = "individual") %>% 
+  merge(bp_fil, by = "individual") %>% 
+  merge(bs_fil, by = "individual") %>% 
+  merge(med_use_fil, by = "individual")
+print(output_tb)
+
+
+## ===== Matching =====
+
+library("tidyverse")
+library("MatchIt")
+library("marginaleffects")
+# Perform matching using nearest neighbors with mahalanobis distance
+matching_all <- matchit(waist_class_bin ~ sex + age + bmi + bp + bs + med_use,
+                 data = output_tb,
+                 method = "nearest",
+                 estimand = "ATT", 
+                 distance = "mahalanobis")
+summary(matching_all)$nn
+summary(select(output_tb, hr))
+summary(select(match.data(matching_all), hr))
+
+## ===== Estimation of Causal Effect =====
+
+# utilize parametric g-formula (implementation from lab 8 "matching_lab.Rmd")
+# Use matched data & weights from MatchIt
+matched_data <- match.data(matching_all)
+
+outcome_model <- lm(
+  hr ~ waist_class_bin + sex + age + bmi + bp + bs + med_use,
+  data   = matched_data,
+  weights = weights
+)
+
+summary(outcome_model)
+
+# Calculate ATT via parametric g-formula
+# Predict Y under treat=1 and treat=0 for the actually treated units
+treated_rows <- subset(matched_data, waist_class_bin == 1)
+
+treated_as_treated <- treated_rows
+treated_as_control <- treated_rows
+treated_as_control$waist_class_bin <- 0
+
+# Y^{a=1}
+y1_hat <- predict(outcome_model, newdata = treated_as_treated)
+# Y^{a=0}
+y0_hat <- predict(outcome_model, newdata = treated_as_control)
+
+# ATT (avg causal effect of small vs. large waist on heart rate)
+att_gformula <- mean(y1_hat) - mean(y0_hat)
+att_gformula
+
+# This outputs the calculated causal effect result: "-2.934693"
+
+
+## ===== Marginal effects (additional) from lab =====
+
+# Additional information (other than ATT of possible interest for future exploration)
+avg_comparisons(
+  outcome_model,
+  variables = "waist_class_bin",
+  vcov = ~subclass,
+  newdata = subset(matched_data, waist_class_bin == 1)
+)
 
 
 ```
