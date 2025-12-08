@@ -8,7 +8,7 @@
 ##### Describe your causal question in a way that someone who has not taken this class would understand. Why are you interested in this question? How could answering this question allow for better decision making? Include any necessary background or context. Cite outside sources you use.
 
 **Answer**
-We are interested in understanding whether havings a high-risk waist circumference causes higher resting pulse rate in adults. Resting pulse rate is a widely used indicator of cardiovascular health, and elevated pulse has been associated with hypertension, arrhythmias, and increased risk of cardiovascular disease. Waist circumference, which reflects central (visceral) adiposity, is increasingly recognized as an important marker of cardiometabolic risk, sometimes beyond what body mass index (BMI) captures.
+We are interested in understanding whether having a high-risk waist circumference causes higher resting pulse rate in adults. Resting pulse rate is a widely used indicator of cardiovascular health, and elevated pulse has been associated with hypertension, arrhythmias, and increased risk of cardiovascular disease. Waist circumference, which reflects central (visceral) adiposity, is increasingly recognized as an important marker of cardiometabolic risk, sometimes beyond what body mass index (BMI) captures.
 
 This question matters because most available evidence documents correlations between obesity-related measures and pulse rate, but correlation alone does not tell us whether excess central adiposity itself contributes to higher pulse. Answering this question causally could help clinicians and public health practitioners better assess cardiovascular risk and prioritize interventions that focus on reducing central obesity, rather than relying solely on BMI, when making treatment or prevention decisions.
 
@@ -136,17 +136,25 @@ Together, these assumptions allow us to interpret our estimated ATT as a causal 
 ##### Give some context for your dataset. Who is included in your dataset? How was the data collected? When was the data collected? Make sure to cite the dataset.
 
 **Answer**
+The dataset we were working with was Wave V from Add Health. The National Longitudinal Study of Adolescent to Adult Health (Add Health) follows a sample of about 20,000 adolescents who were in grades 7-12 during the 1994-95 school year over many years, with Wave V being in 2016-2018. We used data from Demographics, Cardiovascular Measures, and Anthropometrics.  
 
+Wave V was a mixed-mode survey with some respondents having in-home interviews. This included repeat anthropometric, cardiovascular, metabolic, and inflammatory measures indicative of change in various health situations such as diabetes. https://dataverse.unc.edu/dataset.xhtml?persistentId=doi:10.15139/S3/ZYRZ5J
 
 
 ##### Discuss any choices you made regarding data cleaning and processing: Did your data have missing values or outliers? How did you handle them? Were there any variables you dichotomized (i.e. made binary), or variables that you changed the format (e.g. yes/no to 1/0)?
 
-**Answer**
+**Answer**  
+Any individuals that had invalid or missing data in any of the variables were excluded from the analysis (including waist size, heart rate, body-mass-index, blood pressure, blood sugar level, anti-hypertensive medication use, however sex and age was present for each individual). Originally there were around 1,839 individuals, but throughout the cleaning process, we cut it down to 1,706 individuals who had valid data in the variables we were looking at. Outliers were not discounted since many of the variables that were analyzed were classifications (including waist, body-mass-index, blood-sugar level, and a flag for anti-hypertensive medication use).  
+
+Waist size was reported as a classification between high risk and low risk (was dependent on sex) in the Add Health data. This means it was already dichotomized, but it was classified with 1 being low risk and 2 being high risk. I changed this to be 0 being high risk and 1 being low risk. 
 
 
 ##### Discuss the impact of any choices you made regarding your dataset, such as choices you made in data cleaning or processing.
 
 **Answer**
+Using corresponding variable names for cardiovascular statistics (H5PR for pulse rate) and anthropometrics statistics (H5WSTCLS for waist size), we processed the data to exclude non-answers in waist circumference and pulse PR (ensuring that only relevant entries were considered). This may have reduced the total number of individuals for our analysis, but was necessary for the purpose of assessing our causal question. Without insights into these measures, we could not use every individual evaluated in Wave V, and we lose some potential confounder about whether or not they could be evaluated on that metric. For example, we do not know if low risk or high risk waist sized people would be more or less likely to have a valid pulse rate measurement.  
+
+Once we merged all of the data to just contain individuals with valid data for all of the relevant variables, we found that we had more individuals who were at high risk for waist (our control) than low risk waist (our treatment). This helps us to find more similar counterparts for each treated person if you have more control to select from. However, since the treatment group is smaller, it can be more impacted by randomness or outliers. 
 
 
 ##### Explain how you estimated a causal effect.
@@ -160,7 +168,11 @@ discuss their implications. Think about advantages or drawbacks to any choices y
 bias-variance trade-offs, and assessing how well your method did.
 
 **Answer**
+We utilized matching to understand the effect of those who had a low risk (or smaller) waist size on their pulse rate (so we did ATT with low risk as treatment). Since we had various levels of classification (and differing ranges), we utilized Mahalanobis distance to account for the different scales of sex, age, bmi, blood pressure, blood sugar, anti-hypertensive medication use (as well as correlation between our different variables).  
 
+Once matched, we had 60 more units from the control group, so we dropped those 60 that were not nearest to any of the treatment individuals. We used ‘nearest’ to determine matching since we only had 823 matched units and had already reduced our number of individuals by requiring that they had valid entries for all relevant variables. There is a downside to this since all treated individuals were matched and there could have been an outlier in that set that had to get matched with a control that was not similar to it (but the control was the most similar to it).  
+
+In terms of the quality of our matching, the distribution of our matched set of units was quite similar to our data before matching. It has the same min and max, while the mean is only less by .24 and the median was less by .25. Since the distributions were similar, we know that our data is likely quite representative of our individuals with all the relevant valid data.  
 
 ##### Report your causal effect estimate and interpret it in the context of your causal question.
 
