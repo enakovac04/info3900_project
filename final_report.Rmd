@@ -43,7 +43,7 @@ The causal estimand of interest is the **average treatment effect on the treated
 
 **Answer**
 
-knitr::include_graphics(""C:\Users\ena77\OneDrive\Documents\info3900_project\dagfinal.png"")
+knitr::include_graphics("dagfinal.png")
 
 
 Our DAG includes the following variables:
