@@ -45,6 +45,12 @@ The causal estimand of interest is the **average treatment effect on the treated
 
 knitr::include_graphics("dagfinal.png")
 
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(dev = 'pdf')
+```
+
+![DAG](dagfinal.png)
 
 Our DAG includes the following variables:
 
